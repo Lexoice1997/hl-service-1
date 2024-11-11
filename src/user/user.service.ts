@@ -3,8 +3,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { users } from 'src/db/users';
 import { v4 as uuidv4 } from 'uuid';
+
+import { users } from 'src/db/users';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './types/user.type';
@@ -55,17 +56,19 @@ export class UserService {
     const userIndex = users.findIndex((item) => item.id === id);
     const user = users.find((item) => item.id === id);
 
-    if (!user)
+    if (!user) {
       throw new NotFoundException({
         message: 'User not found',
         code: 'USER_NOT_FOUND',
       });
+    }
 
-    if (dto.oldPassword !== user.password)
+    if (dto.oldPassword !== user.password) {
       throw new ForbiddenException({
         message: 'Wrong password',
         code: 'WRONG_PASSWORD',
       });
+    }
 
     const newUser: User = {
       ...user,
@@ -81,9 +84,8 @@ export class UserService {
 
   deleteUser(id: string) {
     const userIndex = users.findIndex((item) => item.id === id);
-    const user = users.find((item) => item.id === id);
 
-    if (!user)
+    if (userIndex === -1)
       throw new NotFoundException({
         message: 'User not found',
         code: 'USER_NOT_FOUND',
